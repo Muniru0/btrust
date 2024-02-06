@@ -1,5 +1,6 @@
 import * as http  from 'http';
 import * as utils from './server_assets/utils.js'
+import * as txts from './transactions/transactions.js'
 
 import fs from 'fs';
 import path from 'path';
@@ -9,10 +10,42 @@ const server = http.createServer((req, res) => {
     const parsedUrl = url.parse(req.url);
     let pathname = `.${parsedUrl.pathname}`;
     if(req.method === "POST"){
+ 
+       let data = "";
+
+        req.on('data', (incomingData) => {
+            data += incomingData.toString(); 
+        });
+    
+        req.on("end",()=>{
+            const action   = JSON.parse(data).action;
+            res.writeHead(200,{"Content-type": "application/json"});
+
+            if(action === "decodeRawTransaction"){
+
+                const hexString = JSON.parse(data).hexString;
+                res.end(JSON.stringify(utils.decodeRawTransaction(hexString)));
 
 
-        res.writeHead(200,{"Content-type": "application/json"});
-        res.end(JSON.stringify(utils.decodeRawTransaction()));
+            }else if(action === "getRedeemScriptHex"){
+                // take the bytes encoding, then return the redeem script in hex
+                const bytesEncoding = JSON.parse(data).bytesEncoding;
+                res.end(JSON.stringify(txts.getRedeemScriptHex(bytesEncoding)));
+                
+            } else if(action === "getAddress"){
+
+                const preimage = JSON.parse(data).bytesEncoding;
+                res.end(JSON.stringify(txts.getAddressFromPreimage(preimage)));
+                
+            } else if(action === "constructTransaction"){
+
+                // const hexString = JSON.parse(data).;
+                // res.end(JSON.stringify(utils.(hexString)));
+            }else{
+                res.end(JSON.stringify({msg: "Couldn't find anyone worthy"}));
+            }
+        });        
+        
 
     }else{
 

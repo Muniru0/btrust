@@ -9,11 +9,13 @@
 
 
 $(document).ready(function() {
-    $('#generateAddress').click(function(e) {
-        // console.log(bitcoin.networks.testnet);
+    $('#getTransactionDetails').click(function(e) {
+       
+        e.preventDefault();
         $.ajax({
             url: 'http://localhost:3000',
             type: 'POST',
+            data: JSON.stringify({action:"decodeRawTransaction",hexString: $("#hexString").val()}),
             contentType: 'application/json', // Set the content type
             success: function(data) {
                 console.log(data);
@@ -22,19 +24,33 @@ $(document).ready(function() {
                 console.error("Error occurred: " + status + "\nError: " + error);
             }
         });
-        
+       
     });
 
-    $('#sendForm').submit(function(event) {
-        event.preventDefault();
-        const recipientAddress = $('#recipientAddress').val();
-        const amount = parseFloat($('#amount').val());
-        sendBitcoin(recipientAddress, amount);
+
+    $('#getRedeemScript').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"getRedeemScriptHex",bytesEncoding: $("#bytesEncoding").val()}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
     });
+   
 });
 
-function sendBitcoin(toAddress, amount) {
-    // Placeholder for transaction logic
-    console.log(`Sending ${amount} BTC to ${toAddress}`);
-    // In a real implementation, you would construct and broadcast a transaction here
-}
+
+    
+
+   
+
+

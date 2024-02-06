@@ -11,6 +11,7 @@
   "author": "piece of shit",
   "license": "ISC",
   "dependencies": {
+    "bip32": "^4.0.0",
     "bitcoinjs-lib": "^6.1.5",
     "browserify": "^17.0.0",
     "ecpair": "^2.1.0",
