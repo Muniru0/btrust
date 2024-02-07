@@ -118,8 +118,13 @@ txb.addOutput({
   }
 }
 
-
-
+// after completing the test of sendBTC: this was the response
+//{
+//   "txt_id": "7e44429a375f7c9b4b71342a2284b271045eef27d1b6b231840d6138d4746bd8",
+//   "hex_contructed_txt": {
+//       "txt_hex": "020000000145e03ae1c39a3adaffaf44f4dbf97982170fc5ee1a62864fbf8c8b97a30518a3000000006b483045022100e07e2f46baf7871eb39f21ef96c567b7196375036c412d7ee5d30ccda54b936702205268d5a0da79f91f725cc4ccc320f3891b0fbf36dba92a547b4999ccf1a1494701210324077e816ee97a2ed9c27ad305b5be86200cd161ad36901e5ad4fb3d2e48f11dffffffff01e80300000000000017a9141c99440e4938b969f26e3792f85b457c0365625b8700000000"
+//   }
+// }
 const sendBTC = async (amount) => {
 
    const hex = await getTransactionHex(amount);
