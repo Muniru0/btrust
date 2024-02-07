@@ -26,6 +26,40 @@ $(document).ready(function() {
         });
        
     });
+    $('#getWalletInfo').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"getWalletInfo"}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
+    $('#getWalletAddress').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"getWalletAddress"}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
 
 
     $('#getRedeemScript').click(function(e) {
@@ -35,6 +69,40 @@ $(document).ready(function() {
             url: 'http://localhost:3000',
             type: 'POST',
             data: JSON.stringify({action:"getRedeemScriptHex",bytesEncoding: $("#bytesEncoding").val()}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
+    $('#getTransactionHex').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"getTransactionHex"}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
+    $('#sendBtc').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"sendBTC",amount: $("#amount").val()}),
             contentType: 'application/json', // Set the content type
             success: function(data) {
                 console.log(data);

@@ -6,7 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import * as url from 'url';
 
-const server = http.createServer((req, res) => {
+const server = http.createServer( (req, res)  => {
     const parsedUrl = url.parse(req.url);
     let pathname = `.${parsedUrl.pathname}`;
     if(req.method === "POST"){
@@ -17,7 +17,7 @@ const server = http.createServer((req, res) => {
             data += incomingData.toString(); 
         });
     
-        req.on("end",()=>{
+        req.on("end",async () => {
             const action   = JSON.parse(data).action;
             res.writeHead(200,{"Content-type": "application/json"});
 
@@ -32,16 +32,35 @@ const server = http.createServer((req, res) => {
                 const bytesEncoding = JSON.parse(data).bytesEncoding;
                 res.end(JSON.stringify(txts.getRedeemScriptHex(bytesEncoding)));
                 
-            } else if(action === "getAddress"){
+            } else if(action === "getTransactionHex"){
 
-                const preimage = JSON.parse(data).bytesEncoding;
-                res.end(JSON.stringify(txts.getAddressFromPreimage(preimage)));
                 
-            } else if(action === "constructTransaction"){
+                res.end(JSON.stringify(await txts.getTransactionHex()));
+                
+            } else if(action === "sendBTC"){
 
                 // const hexString = JSON.parse(data).;
-                // res.end(JSON.stringify(utils.(hexString)));
-            }else{
+                const amount = JSON.parse(data).amount;
+                // res.end(JSON.stringify(txts.getTransactionHex(amount)));
+                 res.end(JSON.stringify( await txts.sendBTC(amount)));
+            
+            } else if(action === "getWalletInfo"){
+
+                // const hexString = JSON.parse(data).;
+                const amount = JSON.parse(data).amount;
+                // res.end(JSON.stringify(txts.getTransactionHex(amount)));
+                 res.end(JSON.stringify( await txts.getWalletInfo(amount)));
+            
+            } else if(action === "getWalletAddress"){
+
+                // const hexString = JSON.parse(data).;
+                const amount = JSON.parse(data).amount;
+                // res.end(JSON.stringify(txts.getTransactionHex(amount)));
+                 res.end(JSON.stringify( await txts.getWalletAddress(amount)));
+            }
+            
+            
+            else{
                 res.end(JSON.stringify({msg: "Couldn't find anyone worthy"}));
             }
         });        

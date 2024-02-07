@@ -1,9 +1,6 @@
 import * as http  from 'http';
 import bitcoin from 'bitcoinjs-lib';
-import { ECPairFactory } from "ecpair";
-import * as tinySecp256k1  from "tiny-secp256k1";
-// const ECPair = ECPairFactory(tinySecp256k1);
-import crypto from "crypto";
+
 
 
 
