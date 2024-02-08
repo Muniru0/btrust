@@ -9,6 +9,7 @@
 
 
 $(document).ready(function() {
+   
     $('#parseTransactions').click(function(e) {
        
         e.preventDefault();
@@ -16,6 +17,76 @@ $(document).ready(function() {
             url: 'http://localhost:3000',
             type: 'POST',
             data: JSON.stringify({action:"parseTransactions"}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
+
+    $('#stackEval').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"stackEvaluation",hexString: $("#stackEvalHex").text()}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
+    $('#getHexFromPreimage').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"hexFromPreimage",preimage: $("#preimage").val()}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
+    $('#sendBTC').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"sendBTC",redeemScriptHex: $("#scriptHex").text(),amount: $("#amountForHex").val()}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
+
+    $('#sendBtcPreimage').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"txtToBtrustPreimage",amount: $("#amountForPrimage").val(),preimage: $("#preimageBtrust").text(),hexString: $("#hexString").val()}),
             contentType: 'application/json', // Set the content type
             success: function(data) {
                 console.log(data);
@@ -113,23 +184,7 @@ $(document).ready(function() {
         });
        
     });
-    $('#getBtrustAddress').click(function(e) {
-       
-        e.preventDefault();
-        $.ajax({
-            url: 'http://localhost:3000',
-            type: 'POST',
-            data: JSON.stringify({action:"getBtrustAddress",preimage: $("#preimage").val()}),
-            contentType: 'application/json', // Set the content type
-            success: function(data) {
-                console.log(data);
-            },
-            error: function(xhr, status, error) {
-                console.error("Error occurred: " + status + "\nError: " + error);
-            }
-        });
-       
-    });
+    
 
 
     $('#sendBtc').click(function(e) {

@@ -11,7 +11,7 @@ const ECPair = ecpair.ECPairFactory(secp256k1);
 
 const keyPair = ECPair.fromPrivateKey(Buffer.from("d4473603292312d2b5662cc05e27df987a101c4f7b6428107df84b9595ecbffe","hex"));
 
-const stackEval = (stack) => {
+const stackEvaluation = (scriptHex) => {
 //   Stack Evaluation:
 
 // Initial State:
@@ -68,7 +68,46 @@ const stackEval = (stack) => {
 // Result:
 
 // The script evaluates to FALSE because the final comparison (0x01 == 0x04) is false.
+
+
+  // Convert the hex string to an array of bytes
+  
+  const bytes = Buffer.from(scriptHex, 'hex');
+
+  // Initialize an empty stack
+  const stack = [];
+
+  // Iterate over each byte in the script
+  for (let i = 0; i < bytes.length; i++) {
+      const opcode = bytes[i];
+
+      // Push opcode onto the stack
+      stack.push(opcode);
+
+      // If opcode is OP_TRUE (0x51), OP_FALSE (0x00), or OP_PUSHDATA (0x01-0x4b), continue
+      if (opcode === 0x51) {
+          stack.pop(); // Remove OP_TRUE from stack
+          stack.push(true); // Push true onto stack
+      } else if (opcode === 0x00) {
+          stack.pop(); // Remove OP_FALSE from stack
+          stack.push(false); // Push false onto stack
+      } else if (opcode >= 0x01 && opcode <= 0x4b) {
+          const dataLength = opcode;
+        const data = bytes.subarray(i + 1, i + 1 + dataLength);
+          stack.pop(); // Remove OP_PUSHDATA from stack
+          stack.push(data); // Push data onto stack
+          i += dataLength; // Increment i to skip over the data bytes
+      }
+  }
+
+  // If stack contains a single element and it's true, return true; otherwise, return false
+  return {"result":stack.length === 1 && stack[0] === true};
 }
+
+
+
+
+
 
 const isTaprootOutput = output => {
   // Taproot outputs have a scriptPubKey starting with OP_1 (0x51) followed by a 32-byte or  public key
@@ -139,21 +178,12 @@ function parseTransaction(hexStrings) {
 
 }
 
-const getWalletAddress = async () => {
-
-   const network = bitcoin.networks.testnet;
-  // const address = keyPair.getAddress();
- return bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey, network: network }).address;
-
-
-}
-
 
 // private key in hex of arbitrary wallet
 // d4473603292312d2b5662cc05e27df987a101c4f7b6428107df84b9595ecbffe
-const getRedeemScriptHex =(bytesEncoding) =>{
+const hexFromPreimage =(preimageString) =>{
 
-    const preimage = Buffer.from(bytesEncoding, 'hex');
+    const preimage = Buffer.from(preimageString, 'hex');
     const lockHash = bitcoin.crypto.hash256(preimage);
     const redeemScript = bitcoin.script.compile([
     bitcoin.opcodes.OP_SHA256,
@@ -166,16 +196,13 @@ const getRedeemScriptHex =(bytesEncoding) =>{
 }
 
 
-// total in wallet: 0.00069541 tBTC
-
-
-
-const  getTransactionHex = async (preimage)  => {
+const  getTransactionRawHex = async (amount,redeemScriptHex)  => {
 
   
    
   let rawUTXOHex = "";
   amount = (amount === undefined) || (amount.trim() === "") || (parseFloat(amount) === NaN)  ? 1000: parseFloat(amount) / 100000000;
+ 
   try {
 
 const redeemScriptBuffer = Buffer.from(redeemScriptHex, 'hex');
@@ -249,7 +276,7 @@ txb.addOutput({
 // This sends bitcoin with bytesEncoding: 010101029301038801027693010487
 const sendBTC = async (amount,redeemScriptHex) => {
 
-   const hex = await getTransactionHex(amount,redeemScriptHex);
+   const hex = await getTransactionRawHex(amount,redeemScriptHex);
   
     try {
       if(hex["txt_hex"] === undefined) throw new Error(hex["error"]);
@@ -271,10 +298,11 @@ const sendBTC = async (amount,redeemScriptHex) => {
 
 
 // get the redeem script hex
-const getRedeemScriptHexForBtrust = (preimage) => {
+const txtToBtrustPreimage = (amount,preimage) => {
 
-const network = bitcoin.networks.testnet;
-   
+
+  
+const network = bitcoin.networks.regtest;
 // Preimage
 const preimageHash = crypto.createHash('sha256').update(preimage).digest('hex');
 
@@ -323,4 +351,4 @@ const p2sh = bitcoin.payments.p2sh({ // Destination address
 
 
 
-export { parseTransaction , getTransactionHex , getRedeemScriptHex , sendBTC  , getWalletAddress , getRedeemScriptHexForBtrust  }
+export { getTransactionRawHex , stackEvaluation , parseTransaction  ,hexFromPreimage  , sendBTC , txtToBtrustPreimage  }

@@ -21,7 +21,8 @@ const server = http.createServer( (req, res)  => {
             const action   = JSON.parse(data).action;
             res.writeHead(200,{"Content-type": "application/json"});
 
-            
+             // Question 1:
+            // evaluate the stackhex
             if(action === "parseTransactions"){
                
                 // declare the hex strings here to remind ourselves that we can later bring them through the ajax API
@@ -29,43 +30,45 @@ const server = http.createServer( (req, res)  => {
                
                 res.end(JSON.stringify(txts.parseTransaction(hexStrings)));
 
-            }else if(action === "decodeRawTransaction"){
-
-                const hexString = JSON.parse(data).hexString;
-                res.end(JSON.stringify(utils.decodeRawTransaction(hexString)));
-
-
-            }else if(action === "getRedeemScriptHex"){
-                // take the bytes encoding, then return the redeem script in hex
-                const bytesEncoding = JSON.parse(data).bytesEncoding;
-                res.end(JSON.stringify(txts.getRedeemScriptHex(bytesEncoding)));
-                
-            } else if(action === "getTransactionHex"){
-                
-                
-                const redeemScriptHex = JSON.parse(data).redeemScriptHex;
-                res.end(JSON.stringify(await txts.getTransactionHex(redeemScriptHex)));
-                
-            } else if(action === "sendBTC"){
-
-                // const hexString = JSON.parse(data).;
-                const amount = JSON.parse(data).amount;
-                const redeemScriptHex = JSON.parse(data).redeemScriptHex;
-                // res.end(JSON.stringify(txts.getTransactionHex(amount)));
-                 res.end(JSON.stringify( await txts.sendBTC(amount,redeemScriptHex)));
-            
-            } else if(action === "getWalletAddress"){
-
-                
-                 res.end(JSON.stringify( await txts.getWalletAddress()));
-                 
-            } else if(action === "getBtrustAddress"){
+            // Question 2:
+            }
+            // Question 2:
+            else if(action === "stackEvaluation"){
+                const hexString   = JSON.parse(data).hexString.trim();
+                res.end(JSON.stringify(txts.stackEvaluation(hexString)));
+           
+           
+            }
+            // Question 3:
+            else if(action === "getBtrustAddress"){
 
               
                 const preimage = JSON.parse(data).preimage;
                  res.end(JSON.stringify(txts.getRedeemScriptHexForBtrust(preimage)));
             
-            } else{
+            }
+            // Question 3a:
+            else if(action === "sendBTC"){
+
+                // const hexString = JSON.parse(data).;
+                const amount = JSON.parse(data).amount.trim();
+                const redeemScriptHex = JSON.parse(data).redeemScriptHex.trim();
+                
+                res.end(JSON.stringify(await txts.sendBTC(amount,redeemScriptHex)));
+            
+            }
+            // Question 3b:
+            else  if(action === "txtToBtrustPreimage"){
+
+                // the amount is just to remind us that we can later bring it through the ajax API
+                const amount = JSON.parse(data).amount.trim();
+                const preimage = JSON.parse(data).preimage.trim();
+                res.end(JSON.stringify(txts.txtToBtrustPreimage(preimage)));
+               
+
+
+            }
+            else{
                 res.end(JSON.stringify({msg: "Invalid action"}));
             }
         });        

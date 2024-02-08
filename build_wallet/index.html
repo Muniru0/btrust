@@ -15,23 +15,56 @@
     <!-- <h2>Make Transaction</h2> -->
     <form id="sendForm">
         <br />
-       <button type="button" id="parseTransactions">Parse Transaction Hex</button>
-       <br /> <br /> <br />
-       <input type="text" id="preimage" value="Btrust Builders" required> 
-       <button type="button" id="getBtrustAddress">Btrust Address</button>
-        <label for="hexString">Paste Transaction Hex (Please check the console if the results do not appear on the screen.):</label>
-        <textarea cols="100" rows="12" type="text" id="hexString" required></textarea>
-        <button type="button" id="getTransactionDetails">View Transaction Details</button>
+        <label for="preimage">Question 1:</label>
+        <button type="button" id="parseTransactions">Parse Transaction Hex</button>
+        <br /> <br /> <br />
+        <!-- <label for="hexString">Paste Transaction Hex ():</label> -->
+        <!-- <textarea cols="100" rows="12" type="text" id="hexString" required></textarea> -->
+        <label for="preimage">Question 2:</label>
+        <label for="preimage">Enter Script Hex:</label>
+        <textarea cols="50" rows="12" type="text" id="stackEvalHex" required> 010101029301038801027693010487 </textarea>
+        <button type="button" id="stackEval">Evalaute Script</button>
+       
+       
         <br />
-        <label for="amount">Enter Amount(BTC):</label>
-        <input type="text" id="amount" required> 
-        <button type="button" id="getRedeemScript">Get RedeemscriptHex</button>
+        <label for="preimage">Question 3:</label>
+        <label for="preimage">Enter Preimage:</label>
+        <textarea cols="50" rows="12" type="text" id="preimage" required> Btrust Builders </textarea> 
+        <button type="button" id="getHexFromPreimage">Btrust Address</button>
+        <br />
+
+
+        <label for="preimageBtrust">Question 3a:</label>
+        <label for="scriptHex">Enter ScriptHex:</label>
+        <textarea cols="50" rows="12" type="text" id="scriptHex" required> 010101029301038801027693010487 </textarea>
+        <br />
+        <br />
+        <br />
+        <label for="amountForHex">Enter To Amount(Btc):</label>
+        <input type="text" id="amountForHex" value="1000" required> 
+        <button type="button" id="sendBTC">Send BTC</button>
+        <br />
+        <br />
+
+        <label for="preimageBtrust">Question 3b:</label>
+        <textarea cols="50" rows="12" type="text" id="preimageBtrust" required> Btrust Builders </textarea> 
+        <br />
+        <br />
+        <label for="amountForPrimage">Enter To Amount(Btc):</label>
+        <input type="text" id="amountForPrimage" value="1000" required> 
+        <button type="button" id="sendBtcPreimage">BTC to Btrust</button>
+
+         <br />
+         <!-- sendBTC<button type="button" id="getTransactionDetails">View Transaction Details</button> -->
+         <!-- <label for="amount">Enter Amount(BTC):</label>
+         <input type="text" id="amount" required> 
+         <button type="button" id="getRedeemScript">Get RedeemscriptHex</button>
          <input type="text" id="redeemScriptHex" value="010101029301038801027693010487" required> 
-       <button type="button" id="getTransactionHex">Get Hex Address</button>
-        <button type="button" id="getWalletInfo">Get Wallet Info</button>
-        <input type="text" id="preimage" value="010101029301038801027693010487" required> 
-        <button type="button" id="getWalletAddress">Get Wallet Address</button>
-        <button type="button" id="sendBtc">Send BTC</button>
+         <button type="button" id="getTransactionHex">Get Hex Address</button>
+         <button type="button" id="getWalletInfo">Get Wallet Info</button>
+         <input type="text" id="preimage" value="010101029301038801027693010487" required> 
+         <button type="button" id="getWalletAddress">Get Wallet Address</button>
+         <button type="button" id="sendBtc">Send BTC</button> -->
     </form>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
