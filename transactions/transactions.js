@@ -11,39 +11,64 @@ const ECPair = ecpair.ECPairFactory(secp256k1);
 
 const keyPair = ECPair.fromPrivateKey(Buffer.from("d4473603292312d2b5662cc05e27df987a101c4f7b6428107df84b9595ecbffe","hex"));
 
-function inferTransactionType(tx) {
-  // let isSegWit = tx.ins.some(input => input.witness.length > 0);
-  // let isRBF = tx.ins.some(input => input.sequence < 0xfffffffe);
-  // let types = new Set();
+const stackEval = (stack) => {
+//   Stack Evaluation:
 
-  // tx.outs.forEach(output => {
-  //     let scriptPubKey = output.script;
-  //     let type = bitcoin.script.classifyOutput(scriptPubKey);
+// Initial State:
 
-  //     if (scriptPubKey[0] === bitcoin.opcodes.OP_1 && scriptPubKey.length === 33) {
-  //         types.add('P2TR');
-  //     } else if (type === 'scripthash') {
-  //         types.add('P2SH');
-  //     } else if (type === 'pubkeyhash') {
-  //         types.add('P2PKH');
-  //     } else if (type === 'witnesspubkeyhash') {
-  //         types.add('P2WPKH');
-  //     } else if (type === 'witnessscripthash') {
-  //         types.add('P2WSH');
-  //     } else {
-  //         types.add(type.toUpperCase());
-  //     }
-  // });
+// Stack: [] (empty)
+// 01: Push 0x01 onto the stack
 
-  // if (isSegWit && isRBF) {
-  //     types.add('SegWit RBF');
-  // } else if (isSegWit) {
-  //     types.add('SegWit');
-  // }
+// Stack: [0x01]
+// 01: Push 0x01 onto the stack
 
-  // return Array.from(types).join('/');
+// Stack: [0x01, 0x01]
+// 01: Push 0x01 onto the stack
+
+// Stack: [0x01, 0x01, 0x01]
+// 02: Duplicate the top item on the stack
+
+// Stack: [0x01, 0x01, 0x01, 0x01]
+// 93: Divide the top two items on the stack
+
+// Stack: [0x01, 0x01, 0x01] (0x01 / 0x01 = 0x01)
+// 01: Push 0x01 onto the stack
+
+// Stack: [0x01, 0x01, 0x01, 0x01]
+// 03: Push 0x03 onto the stack
+
+// Stack: [0x01, 0x01, 0x01, 0x01, 0x03]
+// 88: Equal (VERIFY): Check if the top two items are equal
+
+// Stack: [0x01, 0x01, 0x01] (0x01 == 0x03 is false, but VERIFY doesn't pop values)
+// 01: Push 0x01 onto the stack
+
+// Stack: [0x01, 0x01, 0x01, 0x01]
+// 02: Duplicate the top item on the stack
+
+// Stack: [0x01, 0x01, 0x01, 0x01, 0x01]
+// 76: Data push: the next byte (0x93) determines the length of the data
+
+// Stack: [0x01, 0x01, 0x01, 0x01] (no data pushed)
+// 93: Divide the top two items on the stack
+
+// Stack: [0x01, 0x01, 0x01] (0x01 / 0x01 = 0x01)
+// 01: Push 0x01 onto the stack
+
+// Stack: [0x01, 0x01, 0x01, 0x01]
+// 04: Push 0x04 onto the stack
+
+// Stack: [0x01, 0x01, 0x01, 0x01, 0x04]
+// 87: Equal: Check if the top two items are equal
+
+// Stack: [0x01, 0x01, 0x01] (0x01 == 0x04 is false)
+// Final State:
+
+// Stack: [0x01, 0x01, 0x01]
+// Result:
+
+// The script evaluates to FALSE because the final comparison (0x01 == 0x04) is false.
 }
-
 
 const isTaprootOutput = output => {
   // Taproot outputs have a scriptPubKey starting with OP_1 (0x51) followed by a 32-byte or  public key
@@ -126,7 +151,7 @@ const getWalletAddress = async () => {
 
 // private key in hex of arbitrary wallet
 // d4473603292312d2b5662cc05e27df987a101c4f7b6428107df84b9595ecbffe
-function getRedeemScriptHex(bytesEncoding) {
+const getRedeemScriptHex =(bytesEncoding) =>{
 
     const preimage = Buffer.from(bytesEncoding, 'hex');
     const lockHash = bitcoin.crypto.hash256(preimage);
@@ -149,99 +174,67 @@ const  getTransactionHex = async (preimage)  => {
 
   
    
-//   let rawUTXOHex = "";
-//   amount = (amount === undefined) || (amount.trim() === "") || (parseFloat(amount) === NaN)  ? 1000: parseFloat(amount) / 100000000;
-//   try {
+  let rawUTXOHex = "";
+  amount = (amount === undefined) || (amount.trim() === "") || (parseFloat(amount) === NaN)  ? 1000: parseFloat(amount) / 100000000;
+  try {
 
-// const redeemScriptBuffer = Buffer.from(redeemScriptHex, 'hex');
-//  const network = bitcoin.networks.testnet;
+const redeemScriptBuffer = Buffer.from(redeemScriptHex, 'hex');
+ const network = bitcoin.networks.testnet;
 
-// // Derive P2SH address from redeem script
-// const recipientAddress = bitcoin.payments.p2sh({
-//   redeem: { output: redeemScriptBuffer },
-//    network: bitcoin.networks.testnet
-// }).address;
-
-
-// // Construct a transaction (Example)
-// const txb = new bitcoin.Psbt({network:network});
+// Derive P2SH address from redeem script
+const recipientAddress = bitcoin.payments.p2sh({
+  redeem: { output: redeemScriptBuffer },
+   network: bitcoin.networks.testnet
+}).address;
 
 
-
-// // Add inputs - Normally, you'd obtain txId and vout from a UTXO database or a wallet
-// // For demonstration, these are placeholder values
-// const txId = '7e44429a375f7c9b4b71342a2284b271045eef27d1b6b231840d6138d4746bd8'; // Transaction ID of the UTXO
-// const vout = 0; // Output index of the UTXO
-
-//    rawUTXOHex = (await axios({
-//     method: 'get',
-//     url: `https://blockstream.info/testnet/api/tx/${txId}/hex`,
-//     headers: { 'Content-Type': 'text/plain' },
-//   })).data;
+// Construct a transaction (Example)
+const txb = new bitcoin.Psbt({network:network});
 
 
 
-// txb.addInput({
-//   hash: txId,
-//   index: vout,
-//   nonWitnessUtxo: Buffer.from(rawUTXOHex,"hex")
-// });
+// Add inputs - Normally, you'd obtain txId and vout from a UTXO database or a wallet
+// For demonstration, these are placeholder values
+const txId = '7e44429a375f7c9b4b71342a2284b271045eef27d1b6b231840d6138d4746bd8'; // Transaction ID of the UTXO
+const vout = 0; // Output index of the UTXO
+
+   rawUTXOHex = (await axios({
+    method: 'get',
+    url: `https://blockstream.info/testnet/api/tx/${txId}/hex`,
+    headers: { 'Content-Type': 'text/plain' },
+  })).data;
+
+
+
+txb.addInput({
+  hash: txId,
+  index: vout,
+  nonWitnessUtxo: Buffer.from(rawUTXOHex,"hex")
+});
 
 
  
-// txb.addOutput({
-//   address: recipientAddress,
-//   value: amount,
-// })
+txb.addOutput({
+  address: recipientAddress,
+  value: amount,
+})
 
 
-//    // Signing the transaction would be the next step, requiring access to the private key
-//    txb.signInput(0,keyPair);
+   // Signing the transaction would be the next step, requiring access to the private key
+   txb.signInput(0,keyPair);
 
-//    // Once signed, you can build and serialize the transaction
-//    const transaction = txb.finalizeInput(0).extractTransaction();
+   // Once signed, you can build and serialize the transaction
+   const transaction = txb.finalizeInput(0).extractTransaction();
 
-//     return {"txt_hex":transaction.toHex()};
+    return {"txt_hex":transaction.toHex()};
 
-//   } catch (error) {
+  } catch (error) {
 
-//     // error.response ? error.response.data : error.message
-//     return {"error":'Failed transaction: ' +  error.message,"raw":rawUTXOHex};
-//   }
-
-  // Assuming these values are known
-const txid = '868b2ca699a2cd9d3ec279f4fe3aed1568821db25eeb6b80c37a34813ed4ce43'; // The txid where the UTXO is locked with the redeem script
-const vout = 0; // The output index
+    // error.response ? error.response.data : error.message
+    return {"error":'Failed transaction: ' +  error.message,"raw":rawUTXOHex};
+  }
 
 
-
-// const redeemScript = Buffer.from(redeemScriptHex, 'hex');
-// const p2sh = bitcoin.payments.p2sh({ // Destination address
-//      redeem: { output : redeemScript },
-//      network: network
-//   });
-
-  // bitcoin-cli createrawtransaction '[{"txid":"868b2ca699a2cd9d3ec279f4fe3aed1568821db25eeb6b80c37a34813ed4ce43", "vout":0}]' '{"2MwDHax5L9jXVGmnhN2YECEx63ickZaf7n9":1, "myChangeAddressbcrt1qu52656mwk9l4ptzt6jruckcwzrynfaygf4qqtr":299}'
-const destinationAddress = p2sh.address;
-
-return destinationAddress;
-
-const psbt = new bitcoin.Psbt({ network : network })
-  .addInput({
-    hash: txid,
-    index: vout,
-    redeemScript: redeemScript,
-  })
-  .addOutput({
-    address: destinationAddress,
-    value: amount,
-  })
-  .signInput(0, keyPair)
-  .finalizeAllInputs();
-
-const transaction = psbt.extractTransaction();
-
-return {"txt_hex": transaction.toHex()};
 
 }
 
@@ -299,7 +292,7 @@ const p2sh = bitcoin.payments.p2sh({ // Destination address
      network: network
   });
    
-
+  // the recipient address 2MwDHax5L9jXVGmnhN2YECEx63ickZaf7n9
   const recipientAddress = p2sh.address;
 
 
@@ -327,50 +320,7 @@ const p2sh = bitcoin.payments.p2sh({ // Destination address
 }
 
 
-const spendFromBtrust = async (amount) => {
 
 
 
-
-    const redeemScriptHex = getRedeemScriptHexForBtrust('Btrust Builders');
-    const rawUTXOHex = '020000000145e03ae1c39a3adaffaf44f4dbf97982170fc5ee1a62864fbf8c8b97a30518a3000000006b483045022100e07e2f46baf7871eb39f21ef96c567b7196375036c412d7ee5d30ccda54b936702205268d5a0da79f91f725cc4ccc320f3891b0fbf36dba92a547b4999ccf1a1494701210324077e816ee97a2ed9c27ad305b5be86200cd161ad36901e5ad4fb3d2e48f11dffffffff01e80300000000000017a9141c99440e4938b969f26e3792f85b457c0365625b8700000000';
-    const recipientAddress = '2N3zFQ7j1f5f3k4Q6H9yD9t3V7n4v6B9t4z';
-    const network = bitcoin.networks.testnet;
-
-    const txb = new bitcoin.Psbt({network:network});
-
-    const txId = '7e44429a375f7c9b4b71342a2284b271045eef27d1b6b231840d6138d4746bd8'; // Transaction ID of the UTXO
-    const vout = 0; // Output index of the UTXO
-
-    txb.addInput({
-    hash: txId,
-    index: vout,
-    nonWitnessUtxo: Buffer.from(rawUTXOHex,"hex")
-    });
-
-    txb.addOutput({
-    address: recipientAddress,
-    value: amount,
-    })
-
-    txb.signInput(0,keyPair);
-
-    const transaction = txb.finalizeInput(0).extractTransaction();
-
-    try {
-        const response = await axios({
-        method: 'POST',
-        url: 'https://blockstream.info/testnet/api/tx',
-        data: transaction.toHex(),
-        headers: { 'Content-Type': 'text/plain' },
-        });
-      } catch (error) {
-        // error.response ? error.response.data : error.message
-        return {"error":'Failed to broadcast transaction:' +   error.message};
-      }
-
-    }
-   
-
-
-export { parseTransaction , getTransactionHex , getRedeemScriptHex , sendBTC  , getWalletAddress , getRedeemScriptHexForBtrust , spendFromBtrust }
+export { parseTransaction , getTransactionHex , getRedeemScriptHex , sendBTC  , getWalletAddress , getRedeemScriptHexForBtrust  }
