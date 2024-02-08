@@ -15,12 +15,8 @@
   Click on `Parse Transaction Hex` button for the first question.
   ```
   ```bash
-  Click on `Parse Transaction Hex` button for the first question.
+  Click on `Click on Evaluate Script` button for the second question and so on.
   ```
   This will run the tests and show the results.
 
-# For the question on passing the hex string and showing the version , input , output,etc. 
-  That is on index.js(http://localhost:3000).
 
-# For the question on the redeem script and transactions:
-  Check the transactions folder(/server/transactions/transactions.js):
