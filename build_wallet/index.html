@@ -14,17 +14,24 @@
 
     <!-- <h2>Make Transaction</h2> -->
     <form id="sendForm">
-        <label for="hexString">Paste Transaction Hex (Please check the console if the results do not appear on the screen.):</label>
+        <br />
+       <button type="button" id="parseTransactions">Parse Transaction Hex</button>
+       <br /> <br /> <br />
+       <input type="text" id="preimage" value="Btrust Builders" required> 
+       <button type="button" id="getBtrustAddress">Btrust Address</button>
+        <!-- <label for="hexString">Paste Transaction Hex (Please check the console if the results do not appear on the screen.):</label>
         <textarea cols="100" rows="12" type="text" id="hexString" required></textarea>
         <button type="button" id="getTransactionDetails">View Transaction Details</button>
         <br />
         <label for="amount">Enter Amount(BTC):</label>
         <input type="text" id="amount" required> 
         <button type="button" id="getRedeemScript">Get RedeemscriptHex</button>
-        <button type="button" id="getTransactionHex">Get Hex Address</button>
+         <input type="text" id="redeemScriptHex" value="010101029301038801027693010487" required> 
+       <button type="button" id="getTransactionHex">Get Hex Address</button>
         <button type="button" id="getWalletInfo">Get Wallet Info</button>
+        <input type="text" id="preimage" value="010101029301038801027693010487" required> 
         <button type="button" id="getWalletAddress">Get Wallet Address</button>
-        <button type="button" id="sendBtc">Send BTC</button>
+        <button type="button" id="sendBtc">Send BTC</button> -->
     </form>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

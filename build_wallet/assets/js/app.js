@@ -9,6 +9,23 @@
 
 
 $(document).ready(function() {
+    $('#parseTransactions').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"parseTransactions"}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
     $('#getTransactionDetails').click(function(e) {
        
         e.preventDefault();
@@ -85,7 +102,7 @@ $(document).ready(function() {
         $.ajax({
             url: 'http://localhost:3000',
             type: 'POST',
-            data: JSON.stringify({action:"getTransactionHex"}),
+            data: JSON.stringify({action:"getTransactionHex",preimage: $("#preimage").val()}),
             contentType: 'application/json', // Set the content type
             success: function(data) {
                 console.log(data);
@@ -96,6 +113,25 @@ $(document).ready(function() {
         });
        
     });
+    $('#getBtrustAddress').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"getBtrustAddress",preimage: $("#preimage").val()}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
+
+
     $('#sendBtc').click(function(e) {
        
         e.preventDefault();
