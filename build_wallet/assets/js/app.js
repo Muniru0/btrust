@@ -45,6 +45,23 @@ $(document).ready(function() {
         });
        
     });
+    $('#getRedeemScript').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"getRedeemScriptHex",bytesEncoding: $("#bytesEncoding").val()}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
     $('#getHexFromPreimage').click(function(e) {
        
         e.preventDefault();
@@ -97,6 +114,25 @@ $(document).ready(function() {
         });
        
     });
+    $('#getBlock').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"buildBlock"}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
+
+
     $('#getTransactionDetails').click(function(e) {
        
         e.preventDefault();
@@ -148,25 +184,7 @@ $(document).ready(function() {
         });
        
     });
-
-
-    $('#getRedeemScript').click(function(e) {
-       
-        e.preventDefault();
-        $.ajax({
-            url: 'http://localhost:3000',
-            type: 'POST',
-            data: JSON.stringify({action:"getRedeemScriptHex",bytesEncoding: $("#bytesEncoding").val()}),
-            contentType: 'application/json', // Set the content type
-            success: function(data) {
-                console.log(data);
-            },
-            error: function(xhr, status, error) {
-                console.error("Error occurred: " + status + "\nError: " + error);
-            }
-        });
-       
-    });
+   
     $('#getTransactionHex').click(function(e) {
        
         e.preventDefault();
@@ -187,23 +205,6 @@ $(document).ready(function() {
     
 
 
-    $('#sendBtc').click(function(e) {
-       
-        e.preventDefault();
-        $.ajax({
-            url: 'http://localhost:3000',
-            type: 'POST',
-            data: JSON.stringify({action:"sendBTC",amount: $("#amount").val()}),
-            contentType: 'application/json', // Set the content type
-            success: function(data) {
-                console.log(data);
-            },
-            error: function(xhr, status, error) {
-                console.error("Error occurred: " + status + "\nError: " + error);
-            }
-        });
-       
-    });
    
 });
 

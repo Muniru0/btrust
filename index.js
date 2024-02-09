@@ -2,7 +2,7 @@ import * as http  from 'http';
 // import * as utils from './server_assets/utils.js'
 import * as txts from './transactions/transactions.js'
 import builder from './transactions/transaction_bulder.js'
-
+import { getBlock } from './blocks/build_block.js'
 import fs from 'fs';
 import path from 'path';
 import * as url from 'url';
@@ -68,6 +68,11 @@ const server = http.createServer( (req, res)  => {
                
 
 
+            
+            }
+            // Week 3 Question 1:
+            else if(action === "buildBlock"){
+                res.end(JSON.stringify(getBlock()));
             }
             else{
                 res.end(JSON.stringify({msg: "Invalid action"}));
