@@ -2,13 +2,16 @@
 
 ## Introduction
 
-The readMe provides an outline pertaining to the key steps involved in the boot process of a Tiny Bitcoin Peer. It will focus on the regtest network. It will highlight basic operations like configuration loading, network initialization, peer discovery and connection(the use of addnode/ connect), blockchain synchronization, and security measures.
+The readMe provides an outline pertaining to the key steps involved in the boot process of a Tiny Bitcoin Peer. It will focus on the regtest network. It will highlight basic operations like configuration loading, network initialization, peer discovery and connection(the use of addnode/ connect), blockchain synchronization, and security measures. This explanation will assume multiple instances of regtest nodes on the same machine `localhost=127.0.0.1`. 
+
 
 ## Boot Sequence
 
 ### 1. Configuration Loading
-
+- You start by executing the command `bitcoind`(provided you are not using any aliases.).
 - The peer begins by loading its configuration settings from a file or environment variables. This includes network settings (mainnet, testnet, or regtest), node operation mode, and any relevant paths for data storage. I am illustrating this on a regtest network. with five nodes(including the default data directory which is  `~/.bitcoin/` directory). The configuration file is located at `~/.bitcoin/bitcoin.conf`. 
+- Inside the configuration file you can have a configuratio like this : `addnode=127.0.0.1:18445` and `port=18444`. This will make the node connect to a peer listening on `port 18445`. While it listens on port 18444. 
+- Note that `addnode` will leave room for connection to other nodes whilst `connect` only connects to the specific node.
 
 
 
