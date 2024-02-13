@@ -327,6 +327,8 @@ const p2sh = bitcoin.payments.p2sh({ // Destination address
   // on bash 
   //bitcoin-cli createrawtransaction '[{"txid":"868b2ca699a2cd9d3ec279f4fe3aed1568821db25eeb6b80c37a34813ed4ce43", "vout":0}]' '{"2MwDHax5L9jXVGmnhN2YECEx63ickZaf7n9":0.10000000, "bcrt1qu52656mwk9l4ptzt6jruckcwzrynfaygf4qqtr":49.8999100}'
 
+  //bitcoin-cli createrawtransaction '[{"txid":"76a003419d40a2c3dc4edde192b7cd2db9f32d0f63d317318f7e517c509ed3c0", "vout":0}]' '{"bcrt1qk3hgrc8dg0tqztuvkk8zgk3x7n2asfpwr6qajz":0.10000000, "bcrt1q92j94gnx04477e0cuf726huv5tnq558dnks3sp":49.8999100}'
+
 
   // which yielded this below:
   //020000000143ced43e81347ac3806beb5eb21d826815ed3afef479c23e9dcda299a62c8b860000000000fdffffff02809698000000000017a9142b82aca6a490542944bdceb48aec066dc7cb1b618758386d2901000000160014e515aa6b6eb17f50ac4bd487cc5b0e10c934f48800000000
