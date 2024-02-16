@@ -23,7 +23,6 @@ const server = http.createServer( (req, res)  => {
             res.writeHead(200,{"Content-type": "application/json"});
 
              // Question 1:
-            // evaluate the stackhex
             if(action === "parseTransactions"){
                
                 // declare the hex strings here to remind ourselves that we can later bring them through the ajax API

@@ -7,6 +7,7 @@ import * as secp256k1  from "tiny-secp256k1";
 import axios from 'axios';
 
 
+
 const ECPair = ecpair.ECPairFactory(secp256k1);
 
 const keyPair = ECPair.fromPrivateKey(Buffer.from("d4473603292312d2b5662cc05e27df987a101c4f7b6428107df84b9595ecbffe","hex"));
@@ -104,11 +105,6 @@ const stackEvaluation = (scriptHex) => {
   return {"result":stack.length === 1 && stack[0] === true};
 }
 
-
-
-
-
-
 const isTaprootOutput = output => {
   // Taproot outputs have a scriptPubKey starting with OP_1 (0x51) followed by a 32-byte or  public key
   return  output.script.length === 34 && output.script[0] === 0x51 ;
@@ -145,8 +141,6 @@ const analyzeTransaction = tx => {
 
 function parseTransaction(hexStrings) {
   
- 
-
   let resultsObj = {};
 
   hexStrings.forEach((hex,index) => {
@@ -179,12 +173,11 @@ function parseTransaction(hexStrings) {
 }
 
 
-// private key in hex of arbitrary wallet
-// d4473603292312d2b5662cc05e27df987a101c4f7b6428107df84b9595ecbffe
+
 const hexFromPreimage =(preimageString) =>{
 
     const preimage = Buffer.from(preimageString, 'hex');
-    const lockHash = bitcoin.crypto.hash256(preimage);
+    const lockHash = bitcoin.crypto.hash256(preimage).hex();
     const redeemScript = bitcoin.script.compile([
     bitcoin.opcodes.OP_SHA256,
     lockHash,
@@ -205,17 +198,18 @@ const  getTransactionRawHex = async (amount,redeemScriptHex)  => {
  
   try {
 
-const redeemScriptBuffer = Buffer.from(redeemScriptHex, 'hex');
+ const redeemScriptBuffer = Buffer.from(redeemScriptHex, 'hex');
  const network = bitcoin.networks.testnet;
 
 // Derive P2SH address from redeem script
 const recipientAddress = bitcoin.payments.p2sh({
-  redeem: { output: redeemScriptBuffer },
+   redeem: { output: redeemScriptBuffer },
    network: bitcoin.networks.testnet
 }).address;
 
 
-// Construct a transaction (Example)
+
+// Construct a transaction
 const txb = new bitcoin.Psbt({network:network});
 
 
@@ -303,6 +297,8 @@ const txtToBtrustPreimage = (amount,preimage) => {
 
   
 const network = bitcoin.networks.regtest;
+
+
 // Preimage
 const preimageHash = crypto.createHash('sha256').update(preimage).digest('hex');
 
