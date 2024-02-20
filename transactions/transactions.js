@@ -151,17 +151,29 @@ function parseTransaction(hexStrings) {
   const txType = analyzeTransaction(tx);
   const inputs = tx.ins.map(input => {
       return {
+
+          // due to the oddity of Display and internal byte orders,
+          // we have to reverse the hex mapped to the txId property
+          // since the hash is from the binary buffer which is in 
+          // the little-endian format.
           txId: Buffer.from(input.hash).reverse().toString('hex'),
+          //the index of the UTXO being referenced by this txId
           vout: input.index,
+          // using the ASM will translate the input script into a human-readable format.
+          // e.g from something like 76 a9 14 <20-byte hash> 88 ac to 
+          // OP_DUP HASH160 <20-byte hash> OP_EQUALVERIFY OP_CHECKSIG
           script: bitcoin.script.toASM(input.script),
+          //the sequence number or field of the UTXO being referenced by this txId
           sequence: input.sequence,
       };
   });
   const outputs = tx.outs.map(output => {
       return {
+          // the amount being sent in the output
           value: (output.value / 1e8) + " BTC",
-           scriptPubKey: output.script.length,
-           //scriptPubKey: bitcoin.script.toASM(output.script),
+           // the script that stipulates the condition(s) 
+           // necessary for this output to be sent
+           scriptPubKey: bitcoin.script.toASM(output.script),
       };
   });
   resultsObj[index] = {'type':txType ,'version': version,'inputs': inputs,'outputs': outputs,'locktime': locktime};
@@ -173,38 +185,56 @@ function parseTransaction(hexStrings) {
 }
 
 
+// 'Btrust Builders' 
+// bytesEncoding = 010101209384738472893824
+const hexFromPreimage =(bytesEncoding) =>{
 
-const hexFromPreimage =(preimageString) =>{
+    // convert the bytes encoding to it's buffer format
+    // as the crypto.hash256 take's a buffer instead of a hex
+    const preimage = Buffer.from(bytesEncoding, 'hex');
 
-    const preimage = Buffer.from(preimageString, 'hex');
+    // create the lockhash for the redeem script by using
+    // the preimage buffer.
     const lockHash = bitcoin.crypto.hash256(preimage).hex();
+
+    // now compile the redeem script
     const redeemScript = bitcoin.script.compile([
     bitcoin.opcodes.OP_SHA256,
     lockHash,
     bitcoin.opcodes.OP_EQUAL
     ]);
 
+    // return the redeem script
     return redeemScript.toString('hex');
    
 }
 
 
+
+
+// this function gathers returns the raw hex for broadcast
 const  getTransactionRawHex = async (amount,redeemScriptHex)  => {
 
-  
-   
+  // initialize a raw UTXO hex variable
   let rawUTXOHex = "";
+
+  // For Demonstration purposes I am sanitizing the amount input
   amount = (amount === undefined) || (amount.trim() === "") || (parseFloat(amount) === NaN)  ? 1000: parseFloat(amount) / 100000000;
  
+
   try {
 
- const redeemScriptBuffer = Buffer.from(redeemScriptHex, 'hex');
+    // since the redeem script will be sent in a hex format,
+    // convert it to a buffer here. (You can use hexfromPreimage)
+    const redeemScriptBuffer = Buffer.from(redeemScriptHex, 'hex');
+
+   // initialize the network variable.
  const network = bitcoin.networks.testnet;
 
 // Derive P2SH address from redeem script
 const recipientAddress = bitcoin.payments.p2sh({
    redeem: { output: redeemScriptBuffer },
-   network: bitcoin.networks.testnet
+   network: network
 }).address;
 
 
@@ -226,19 +256,21 @@ const vout = 0; // Output index of the UTXO
   })).data;
 
 
+  // add the input(s) to the transaction
+  // i.e this is where you are getting your funds for spending
+  txb.addInput({
+    hash: txId,
+    index: vout,
+    nonWitnessUtxo: Buffer.from(rawUTXOHex,"hex")
+  });
 
-txb.addInput({
-  hash: txId,
-  index: vout,
-  nonWitnessUtxo: Buffer.from(rawUTXOHex,"hex")
-});
 
-
- 
-txb.addOutput({
-  address: recipientAddress,
-  value: amount,
-})
+  // add the destination address you derive above
+  // add the amount we sanitized above
+  txb.addOutput({
+    address: recipientAddress,
+    value: amount,
+  })
 
 
    // Signing the transaction would be the next step, requiring access to the private key
@@ -247,6 +279,7 @@ txb.addOutput({
    // Once signed, you can build and serialize the transaction
    const transaction = txb.finalizeInput(0).extractTransaction();
 
+   // return the serialized raw transaction output as a hex
     return {"txt_hex":transaction.toHex()};
 
   } catch (error) {
@@ -270,8 +303,10 @@ txb.addOutput({
 // This sends bitcoin with bytesEncoding: 010101029301038801027693010487
 const sendBTC = async (amount,redeemScriptHex) => {
 
+   // get the raw transaction hex for broadcasting 
    const hex = await getTransactionRawHex(amount,redeemScriptHex);
   
+   // now broadcast the transaction to the network
     try {
       if(hex["txt_hex"] === undefined) throw new Error(hex["error"]);
       const response = await axios({
@@ -305,14 +340,13 @@ const preimageHash = crypto.createHash('sha256').update(preimage).digest('hex');
 // Redeem script: OP_SHA256 <lock_hex> OP_EQUAL
 const redeemScript = bitcoin.script.compile([
   bitcoin.opcodes.OP_SHA256,
-  Buffer.from(preimageHash, 'hex'),
+  preimageHash,
   bitcoin.opcodes.OP_EQUAL,
 ]);
 
-const redeemScriptHex =  redeemScript.toString('hex');
-const redeemScriptBuffer = Buffer.from(redeemScriptHex, 'hex');
+
 const p2sh = bitcoin.payments.p2sh({ // Destination address
-     redeem: { output : redeemScriptBuffer },
+     redeem: { output : redeemScript },
      network: network
   });
    
