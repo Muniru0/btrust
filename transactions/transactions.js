@@ -14,9 +14,19 @@ const keyPair = ECPair.fromPrivateKey(Buffer.from("d4473603292312d2b5662cc05e27d
 
 const stackEvaluation = (scriptHex) => {
 //   Stack Evaluation:
-
+// 010101029301038801027693010487
 // Initial State:
-
+// 01 - This is typically a data push operation in Bitcoin script, but without the context of the preceding OP_CODE to define how many bytes to push, it's treated as part of the data or an incomplete operation.
+// 0101 - These are likely intended to be data values to be pushed onto the stack, but again, without a data push OP_CODE (like OP_PUSHDATA1, OP_PUSHDATA2, etc.), it's unclear.
+// 02 - Similar to above, this would be data to push but lacks a preceding OP_CODE.
+// 93 - This does not correspond to a standard OP_CODE.
+// 01 - Data push indicator without a clear operation.
+// 0388 - More data, unclear without push operation.
+// 01 - Data push indicator.
+// 0276 - Data, potentially intended to be pushed.
+// 93 - Not a standard OP_CODE.
+// 0104 - Data push indicator with data.
+// 87 - Not a standard OP_CODE.
 // Stack: [] (empty)
 // 01: Push 0x01 onto the stack
 
@@ -105,6 +115,8 @@ const stackEvaluation = (scriptHex) => {
   return {"result":stack.length === 1 && stack[0] === true};
 }
 
+
+
 const isTaprootOutput = output => {
   // Taproot outputs have a scriptPubKey starting with OP_1 (0x51) followed by a 32-byte or  public key
   return  output.script.length === 34 && output.script[0] === 0x51 ;
@@ -187,7 +199,7 @@ function parseTransaction(hexStrings) {
 
 // 'Btrust Builders' 
 // bytesEncoding = 010101209384738472893824
-const hexFromPreimage =(bytesEncoding) =>{
+const hexFromPreimage = bytesEncoding => {
 
     // convert the bytes encoding to it's buffer format
     // as the crypto.hash256 take's a buffer instead of a hex
@@ -381,6 +393,50 @@ const p2sh = bitcoin.payments.p2sh({ // Destination address
 
 
 
+// create a wallet 
+const createKeyPair = (source,value,network) => {
+
+  let createdKeyPair = {};
+
+  switch (network) {
+    case "mainnet":
+      network = bitcoin.networks.mainnet;
+      break;
+    case "signet":
+      network = bitcoin.networks.signet;
+      break;
+  
+    default : network = bitcoin.networks.testnet;
+      break;
+  }
 
 
-export { getTransactionRawHex , stackEvaluation , parseTransaction  ,hexFromPreimage  , sendBTC , txtToBtrustPreimage  }
+
+  switch (source) {
+    case "privkey":
+      createdKeyPair = ECPair.fromPrivateKey(Buffer.from(value,"hex"))
+      break;
+
+    case "pubkey":
+      createdKeyPair = ECPair.fromPublicKey(Buffer.from(value,"hex"))
+      break;
+
+    case "wif":
+      createdKeyPair = ECPair.fromWIF()
+      break;
+
+    case "random":
+      createdKeyPair = ECPair.makeRandom({network: network})
+      break;
+
+
+  }
+ 
+
+  return {"privateKey":createdKeyPair.privateKey.toString('hex'),'publicKey':createdKeyPair.publicKey.toString('hex'),'wif':createdKeyPair.toWIF()};
+
+
+
+}
+
+export { getTransactionRawHex , stackEvaluation , parseTransaction  ,hexFromPreimage  , sendBTC , txtToBtrustPreimage, createKeyPair  }

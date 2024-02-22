@@ -202,6 +202,23 @@ $(document).ready(function() {
         });
        
     });
+    $('#createKeyPair').click(function(e) {
+       
+        e.preventDefault();
+        $.ajax({
+            url: 'http://localhost:3000',
+            type: 'POST',
+            data: JSON.stringify({action:"createKeyPair",source: $("#keypairSourceID").val() , value: $("#sourceValue").val(),network: $("#chooseNetworkID").val()}),
+            contentType: 'application/json', // Set the content type
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred: " + status + "\nError: " + error);
+            }
+        });
+       
+    });
     
 
 

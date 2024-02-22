@@ -72,6 +72,13 @@ const server = http.createServer( (req, res)  => {
             // Week 3 Question 1:
             else if(action === "buildBlock"){
                 res.end(JSON.stringify(getBlock()));
+            }else if(action === "createKeyPair"){
+                const source  = JSON.parse(data).source;
+                const value   = JSON.parse(data).value;
+                const network = JSON.parse(data).network;
+                
+                res.end(JSON.stringify(txts.createKeyPair(source,value,network)));
+
             }
             else{
                 res.end(JSON.stringify({msg: "Invalid action"}));

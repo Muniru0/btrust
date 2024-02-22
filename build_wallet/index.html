@@ -58,6 +58,32 @@
         <br />
         <br />
         <button type="button" id="getBlock">Get Transactions Block</button>
+        <br />
+        <br />
+        <br />
+        <label for="keypairSourceID">Choose Source:</label>
+        <select id="keypairSourceID" name="keypairSource">
+        <option value="privkey" selected>From Private Key</option>
+        <option value="pubkey">From Public Key</option>
+        <option value="wif">From Wif</option>
+        <option value="random">Random</option>
+        </select> 
+
+        <br />
+        <br />
+        <label for="chooseNetworkID">Choose Network:</label>
+        <select id="chooseNetworkID" name="chooseNetwork">
+        <option value="mainnet" selected>Mainnet</option>
+        <option value="testnet">Testnet</option>
+        <option value="signet">Signet</option>
+        </select> 
+
+        <br />
+        <br />
+
+        <label for="value">Source Value :</label>
+        <input type="text" id="sourceValue" value="d4473603292312d2b5662cc05e27df987a101c4f7b6428107df84b9595ecbffe" required> 
+        <button type="button" id="createKeyPair"> createKeyPair </button>
          <!-- sendBTC<button type="button" id="getTransactionDetails">View Transaction Details</button> -->
          <!-- <label for="amount">Enter Amount(BTC):</label>
          <input type="text" id="amount" required> 
