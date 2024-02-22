@@ -199,7 +199,8 @@ function parseTransaction(hexStrings) {
 
 // 'Btrust Builders' 
 // bytesEncoding = 010101209384738472893824
-const hexFromPreimage = bytesEncoding => {
+
+const hexFromPreimage = (bytesEncoding) =>{
 
     // convert the bytes encoding to it's buffer format
     // as the crypto.hash256 take's a buffer instead of a hex
@@ -393,8 +394,9 @@ const p2sh = bitcoin.payments.p2sh({ // Destination address
 
 
 
-// create a wallet 
+// create a keypair 
 const createKeyPair = (source,value,network) => {
+
 
   let createdKeyPair = {};
 
